@@ -1,40 +1,130 @@
-name: Publish Docker Image
+services:
+  api:
+    build: .
+    image: ghcr.io/dgianolla/trade-ai:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=false
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    labels:
+      - "traefik.enable=true"
+      # Aqui você define o seu Subdomínio criado lá no painel da Cloudflare!
+      - "traefik.http.routers.api_trade.rule=Host(`api-trade.mcbot.api.br`)"
+      # Aqui a gente amarra o Traefik na porta 8000 da nossa aplicação
+      - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
+    networks:
+      - analise_network
+      - network_public
 
-on:
-  push:
-    branches:
-      - main # O fluxo rodará sempre que você fizer um PUSH pra branch main
+  # Worker especializado para plantas
+  worker-plantas:
+    build: .
+    image: ghcr.io/dgianolla/trade-ai:latest
+    command: celery -A app.core.celery_app worker -Q plantas --loglevel=info --concurrency=2 --hostname=worker-plantas@%h
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=false
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
 
-jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+  # Worker especializado para análise de fotos
+  worker-analise:
+    build: .
+    image: ghcr.io/dgianolla/trade-ai:latest
+    command: celery -A app.core.celery_app worker -Q analise_fotos --loglevel=info --concurrency=2 --hostname=worker-analise@%h
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=false
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # Celery Flower (monitoramento de tasks)
+  flower:
+    build: .
+    image: ghcr.io/dgianolla/trade-ai:latest
+    command: celery -A app.core.celery_app flower --port=5555
+    ports:
+      - "5555:5555"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
 
-      - name: Log in to the GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=analise_imagens
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=latest
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
+
+
+networks:
+  analise_network: # Referencie a rede do seu Traefik aqui. Exemplo:
+
+  network_public:
+    external: true
