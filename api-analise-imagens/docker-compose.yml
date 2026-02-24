@@ -19,13 +19,14 @@ services:
     volumes:
       - ./app:/app/app
     restart: unless-stopped
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    labels:
-      - "traefik.enable=true"
-      # Aqui você define o seu Subdomínio criado lá no painel da Cloudflare!
-      - "traefik.http.routers.api_trade.rule=Host(`api-trade.mcbot.api.br`)"
-      # Aqui a gente amarra o Traefik na porta 8000 da nossa aplicação
-      - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        # Aqui você define o seu Subdomínio criado lá no painel da Cloudflare!
+        - "traefik.http.routers.api_trade.rule=Host(`api-trade.mcbot.api.br`)"
+        # Aqui a gente amarra o Traefik na porta 8000 da nossa aplicação
+        - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
+        - "traefik.docker.network=network_public"
     networks:
       - analise_network
       - network_public
