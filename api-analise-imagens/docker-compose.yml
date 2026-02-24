@@ -22,7 +22,7 @@ services:
     labels:
       - "traefik.enable=true"
       # Aqui você define o seu Subdomínio criado lá no painel da Cloudflare!
-      - "traefik.http.routers.api_trade.rule=Host(`api-trade.suaempresa.com.br`)"
+      - "traefik.http.routers.api_trade.rule=Host(`api-trade.mcbot.api.br`)"
       # Aqui a gente amarra o Traefik na porta 8000 da nossa aplicação
       - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
     networks:

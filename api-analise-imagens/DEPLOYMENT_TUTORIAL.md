@@ -52,7 +52,7 @@ Entendido! Como você gerencia tudo direto pelo painel web da Cloudflare em nuve
 3. Vá no menu lateral e clique em **DNS > Records**.
 4. Clique no botão azul **Add record**:
    *   **Type**: Selecione `A`
-   *   **Name**: Digite o prefixo desejado. Por exemplo, digite **`api-trade`** (que vai virar `api-trade.suaempresa.com.br`).
+   *   **Name**: Digite o prefixo desejado. Por exemplo, digite **`api-trade`** (que vai virar `api-trade.mcbot.api.br`).
    *   **IPv4 address**: Cole o IP público da sua **VPS**.
    *   **Proxy status**: Deixe a nuvem laranja ativada ☁️ (Isso garante o HTTPS "cadeado verde" e segurança).
 5. Clique em **Save**.
@@ -72,7 +72,7 @@ No seu repositório, modifique o `docker-compose.yml`, na parte da `api`:
     ports:
       - "80:8000" # Mapeia a porta 80 do VPS para a 8000 interna da API
 ```
-Se você fizer isso e der "Update Stack" no Portainer, ao acessar `http://api-trade.suaempresa.com.br/docs`, a API abrirá perfeitamente e a Cloudflare forçará o HTTPS automaticamente (`https://`) para os visitantes.
+Se você fizer isso e der "Update Stack" no Portainer, ao acessar `http://api-trade.mcbot.api.br/docs`, a API abrirá perfeitamente e a Cloudflare forçará o HTTPS automaticamente (`https://`) para os visitantes.
 
 #### **Opção B: Usar o Traefik (Se você já tiver ele instalado)**
 Como o erro demonstrou que a sua porta 80 já está em uso pelo **Traefik**, você NÃO pode usar o Nginx Proxy Manager (pois darão conflito). A ótima notícia é que o Traefik é excelente e **já está resolvendo esse papel na sua máquina!**
@@ -90,7 +90,7 @@ A única coisa que você precisa fazer é adicionar os **Labels** (Etiquetas) co
          - "traefik.enable=true"
          
          # 1. Cria o Router indicando seu subdomínio na Nuvem
-         - "traefik.http.routers.api_trade.rule=Host(`api-trade.suaempresa.com.br`)"
+         - "traefik.http.routers.api_trade.rule=Host(`api-trade.mcbot.api.br`)"
          
          # 2. Aponta para onde o Serviço da API escuta DENTRO do container
          - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
