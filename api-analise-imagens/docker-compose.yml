@@ -1,6 +1,7 @@
 services:
   api:
     build: .
+    image: analise-imagens:latest
     ports:
       - "8000:8000"
     environment:
@@ -27,11 +28,12 @@ services:
       - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
     networks:
       - analise_network
-      - traefik-public
+      - network_public
 
   # Worker especializado para plantas
   worker-plantas:
     build: .
+    image: analise-imagens:latest
     command: celery -A app.core.celery_app worker -Q plantas --loglevel=info --concurrency=2 --hostname=worker-plantas@%h
     environment:
       - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
@@ -52,6 +54,7 @@ services:
   # Worker especializado para análise de fotos
   worker-analise:
     build: .
+    image: analise-imagens:latest
     command: celery -A app.core.celery_app worker -Q analise_fotos --loglevel=info --concurrency=2 --hostname=worker-analise@%h
     environment:
       - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
@@ -72,6 +75,7 @@ services:
   # Celery Flower (monitoramento de tasks)
   flower:
     build: .
+    image: analise-imagens:latest
     command: celery -A app.core.celery_app flower --port=5555
     ports:
       - "5555:5555"
@@ -122,5 +126,5 @@ volumes:
 networks:
   analise_network: # Referencie a rede do seu Traefik aqui. Exemplo:
 
-  traefik-public:
+  network_public:
     external: true

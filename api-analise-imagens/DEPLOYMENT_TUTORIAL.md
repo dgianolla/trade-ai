@@ -32,11 +32,26 @@ O nosso projeto requer chaves de API secretas e configurações. Abaixo dessa op
 *   **OPENAI_API_KEY**: `sk-proj-...`
 *   *(Opcional)* **DATABASE_URL**: `postgresql://user:password@postgres:5432/analise_imagens`
 
-### Passo 1.4: Fazer o Deploy
-1. Mais abaixo, ative a opção **"Enable relative path volumes"** (isso permite mapear pastas corretamente).
-2. Clique no botão azul gigante **Deploy the stack**.
+### Passo 1.4: Construir a Imagem Base (Para Docker Swarm)
+Como o Portainer em modo Swarm não compila o código sozinho (ignorando a instrução `build:`), você precisa construir a imagem na sua máquina **uma única vez** antes de iniciar tudo.
 
-O Portainer fará o download do código, usará o `Dockerfile` original para construir (`build`) os contêineres e inicializará nossa API, Celery Worker, Redis, MinIO e Postgres.
+1. Acesse sua VPS via terminal (SSH).
+2. Vá até a pasta onde está este código baixado:
+   ```bash
+   cd /caminho/para/api-analise-imagens
+   ```
+3. Rode o comando de Build da imagem informando o nome `analise-imagens`:
+   ```bash
+   docker build -t analise-imagens:latest .
+   ```
+   *(Aguarde 1 a 2 minutos até ele baixar e instalar o Python/Pacotes).*
+
+### Passo 1.5: Fazer o Deploy no Portainer
+1. Volte na tela de criação de Stack no Portainer.
+2. Mais abaixo, ative a opção **"Enable relative path volumes"** (isso permite mapear pastas corretamente).
+3. Clique no botão azul gigante **Deploy the stack**.
+
+O Portainer fará o download das instruções, usará a nossa imagem recém construída (`analise-imagens:latest`) e inicializará nossa API, Celery Worker, Redis, MinIO e Postgres.
 
 A nossa API ficará acessível **internamente** na porta **8000** da sua VPS ou para a rede do Docker. Se no seu `docker-compose.yml` houver um `ports: - "8000:8000"`, ela ficará exposta para a internet no IP da VPS.
 
@@ -99,12 +114,12 @@ A única coisa que você precisa fazer é adicionar os **Labels** (Etiquetas) co
          - "traefik.http.routers.api_trade.tls.certresolver=YOUR_RESOLVER_NAME_HERE"
    ```
 2. Adicione sua rede do Traefik:
-   Se o seu Traefik existe numa rede global (muito comum se chamar `traefik-public` ou `web`), é preciso conectar a API nela. No **final** do seu `docker-compose.yml`:
+   Se o seu Traefik existe numa rede global (muito comum se chamar `network_public` ou `web`), é preciso conectar a API nela. No **final** do seu `docker-compose.yml`:
    ```yaml
    networks:
      analise_network:
      # Referencie a rede do seu Traefik aqui. Exemplo:
-     traefik-public:
+     network_public:
        external: true
    ```
    E dentro do serviço da `api`, adicione a rede para que o container possa ver o portão de entrada do Traefik:
@@ -113,7 +128,7 @@ A única coisa que você precisa fazer é adicionar os **Labels** (Etiquetas) co
      api:
        networks:
          - analise_network
-         - traefik-public
+         - network_public
    ```
 
 3. Dê Update na sua Stack do Projeto Trade AI no Portainer e a mágica acontece. O Traefik pegará o tráfego do domínio e fará o passe direto para nossa porta `8000` sem você precisar clicar em nenhum painel.
