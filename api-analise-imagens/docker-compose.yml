@@ -18,11 +18,15 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        # Aqui você define o seu Subdomínio criado lá no painel da Cloudflare!
+        # Domínio exato que a Cloudflare manda:
         - "traefik.http.routers.api_trade.rule=Host(`api-trade.mcbot.api.br`)"
-        # Aqui a gente amarra o Traefik na porta 8000 da nossa aplicação
+        # Porta onde o código do Python responde:
         - "traefik.http.services.api_trade.loadbalancer.server.port=8000"
+        # O Nome Exato da Rede Externa onde o Traefik fala (garanta que é esse mesmo)
         - "traefik.docker.network=network_public"
+        # Garante que o roteador receba as requisições normais e seguras da Cloudflare
+        - "traefik.http.routers.api_trade.entrypoints=websecure"
+        - "traefik.http.routers.api_trade.tls=true"
     networks:
       - analise_network
       - network_public
