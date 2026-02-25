@@ -14,8 +14,6 @@ services:
       - postgres
       - redis
       - minio
-    volumes:
-      - ./app:/app/app
     restart: unless-stopped
     deploy:
       labels:
@@ -46,8 +44,6 @@ services:
       - postgres
       - redis
       - minio
-    volumes:
-      - ./app:/app/app
     restart: unless-stopped
 
   # Worker especializado para análise de fotos
@@ -67,8 +63,6 @@ services:
       - postgres
       - redis
       - minio
-    volumes:
-      - ./app:/app/app
     restart: unless-stopped
 
   # Celery Flower (monitoramento de tasks)
@@ -82,8 +76,6 @@ services:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - redis
-    volumes:
-      - ./app:/app/app
     restart: unless-stopped
 
   postgres:
