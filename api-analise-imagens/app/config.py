@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     MINIO_SECRET_KEY: str = "admin123"
     MINIO_SECURE: bool = False
     
-    API_KEY: str = "dev_api_key_123" # Will be overridden by .env in production
+    API_KEY: str
 
     # LLM APIs
     OPENAI_API_KEY: str = ""
