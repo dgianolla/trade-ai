@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     MINIO_SECRET_KEY: str = "admin123"
     MINIO_SECURE: bool = False
     
-    API_KEY: str = "dev_api_key_123"
+    API_KEY: str = "dev_api_key_123" # Will be overridden by .env in production
 
     # LLM APIs
     OPENAI_API_KEY: str = ""
@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str | None = None
 
     # Modelo padrão
-    DEFAULT_LLM_MODEL: str = "gpt-4o"
+    DEFAULT_LLM_MODEL: str = "gpt-4o-mini"
 
     class Config:
         env_file = ".env"

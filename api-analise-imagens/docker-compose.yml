@@ -2,7 +2,9 @@ services:
   api:
     build: .
     image: ghcr.io/dgianolla/trade-ai:latest
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     environment:
+      - API_KEY=${API_KEY}
       - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
       - REDIS_URL=redis://redis:6379/0
       - MINIO_ENDPOINT=minio:9000
