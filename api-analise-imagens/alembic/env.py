@@ -25,8 +25,11 @@ from app.models.analise_fotos.resultado import AnaliseFotoResultado
 config = context.config
 
 # Sobrescrever a URL do banco com a configuração do app ou do sistema (produção)
-db_url = os.getenv("DATABASE_URL", settings.DATABASE_URL)
-config.set_main_option("sqlalchemy.url", db_url)
+db_url = os.getenv("DATABASE_URL")
+if not db_url:  # Se vier None ou string vazia ""
+    db_url = settings.DATABASE_URL
+    
+config.set_main_option("sqlalchemy.url", str(db_url))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
