@@ -38,6 +38,7 @@ services:
     image: ghcr.io/dgianolla/trade-ai:latest
     command: celery -A app.core.celery_app worker -Q plantas --loglevel=info --concurrency=2 --hostname=worker-plantas@%h
     environment:
+      - API_KEY=${API_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
       - MINIO_ENDPOINT=minio:9000
@@ -59,6 +60,7 @@ services:
     image: ghcr.io/dgianolla/trade-ai:latest
     command: celery -A app.core.celery_app worker -Q analise_fotos --loglevel=info --concurrency=2 --hostname=worker-analise@%h
     environment:
+      - API_KEY=${API_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
       - MINIO_ENDPOINT=minio:9000
@@ -82,6 +84,7 @@ services:
     ports:
       - "5555:5555"
     environment:
+      - API_KEY=${API_KEY}
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - redis
