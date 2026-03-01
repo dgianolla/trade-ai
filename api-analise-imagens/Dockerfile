@@ -18,7 +18,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instalar dependências Python
+# Instalar PyTorch CPU-only ANTES para forçar o EasyOCR a não baixar 4GB de dependências NVIDIA/CUDA
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copiar código
