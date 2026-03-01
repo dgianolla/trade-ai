@@ -24,8 +24,9 @@ from app.models.analise_fotos.resultado import AnaliseFotoResultado
 # access to the values within the .ini file in use.
 config = context.config
 
-# Sobrescrever a URL do banco com a configuração do app
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Sobrescrever a URL do banco com a configuração do app ou do sistema (produção)
+db_url = os.getenv("DATABASE_URL", settings.DATABASE_URL)
+config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
