@@ -40,32 +40,37 @@ class AnalisePDVService:
         with open(prompt_path, "r", encoding="utf-8") as f:
             self.PROMPT_AUDITORIA = f.read()
 
-    def auditar_ativo_pdv(self, imagem_bytes: bytes) -> Dict:
+    def auditar_ativo_pdv(self, imagem_bytes: bytes, nome_ativo: str = None) -> Dict:
         """
         Analisa imagem de ativo de PDV e retorna auditoria estruturada.
 
         Args:
             imagem_bytes: Bytes da imagem
+            nome_ativo: Nome do ativo informado (opcional)
 
         Returns:
             Dict com resultado da auditoria conforme schema
         """
         logger.info(f"Iniciando auditoria com modelo {self.modelo_llm}")
 
+        prompt = self.PROMPT_AUDITORIA
+        if nome_ativo:
+            prompt += f"\n\nINFORMAÇÃO DE CONTEXTO DO USUÁRIO: O usuário informou que o ativo presente nesta foto é: '{nome_ativo}'. Utilize esta informação para auxiliar na avaliação da imagem e na classificação correta do tipo_ativo."
+
         # Chamar LLM apropriado
         if self.modelo_llm.startswith("gpt"):
-            resultado = self._auditar_com_openai(imagem_bytes)
+            resultado = self._auditar_com_openai(imagem_bytes, prompt)
         elif self.modelo_llm.startswith("claude"):
-            resultado = self._auditar_com_anthropic(imagem_bytes)
+            resultado = self._auditar_com_anthropic(imagem_bytes, prompt)
         elif self.modelo_llm.startswith("gemini"):
-            resultado = self._auditar_com_gemini(imagem_bytes)
+            resultado = self._auditar_com_gemini(imagem_bytes, prompt)
         else:
             raise ValueError(f"Modelo não suportado: {self.modelo_llm}")
 
         # Validar e retornar
         return self._validar_resultado(resultado)
 
-    def _auditar_com_openai(self, imagem_bytes: bytes) -> Dict:
+    def _auditar_com_openai(self, imagem_bytes: bytes, prompt: str) -> Dict:
         """Auditoria usando GPT-4 Vision."""
 
         # Converter imagem para base64
@@ -79,7 +84,7 @@ class AnalisePDVService:
                     "content": [
                         {
                             "type": "text",
-                            "text": self.PROMPT_AUDITORIA
+                            "text": prompt
                         },
                         {
                             "type": "image_url",
@@ -99,7 +104,7 @@ class AnalisePDVService:
         resultado_json = response.choices[0].message.content
         return json.loads(resultado_json)
 
-    def _auditar_com_anthropic(self, imagem_bytes: bytes) -> Dict:
+    def _auditar_com_anthropic(self, imagem_bytes: bytes, prompt: str) -> Dict:
         """Auditoria usando Claude 3.5 Sonnet."""
 
         # Converter imagem para base64
@@ -123,7 +128,7 @@ class AnalisePDVService:
                         },
                         {
                             "type": "text",
-                            "text": self.PROMPT_AUDITORIA
+                            "text": prompt
                         }
                     ]
                 }
@@ -138,7 +143,7 @@ class AnalisePDVService:
 
         return json.loads(resultado_texto)
 
-    def _auditar_com_gemini(self, imagem_bytes: bytes) -> Dict:
+    def _auditar_com_gemini(self, imagem_bytes: bytes, prompt: str) -> Dict:
         """Auditoria usando Gemini Pro Vision."""
 
         from PIL import Image
@@ -148,7 +153,7 @@ class AnalisePDVService:
         imagem = Image.open(io.BytesIO(imagem_bytes))
 
         response = self.client.generate_content(
-            [self.PROMPT_AUDITORIA, imagem],
+            [prompt, imagem],
             generation_config={
                 "temperature": 0.1,
                 "max_output_tokens": 2000

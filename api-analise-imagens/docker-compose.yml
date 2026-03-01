@@ -5,7 +5,7 @@ services:
     command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     environment:
       - API_KEY=${API_KEY}
-      - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
+      - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
@@ -13,7 +13,6 @@ services:
       - MINIO_SECURE=false
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
-      - postgres
       - redis
       - minio
     restart: unless-stopped
@@ -39,7 +38,7 @@ services:
     image: ghcr.io/dgianolla/trade-ai:latest
     command: celery -A app.core.celery_app worker -Q plantas --loglevel=info --concurrency=2 --hostname=worker-plantas@%h
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
+      - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
@@ -47,10 +46,12 @@ services:
       - MINIO_SECURE=false
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
-      - postgres
       - redis
       - minio
     restart: unless-stopped
+    networks:
+      - analise_network
+      - network_public
 
   # Worker especializado para análise de fotos
   worker-analise:
@@ -58,7 +59,7 @@ services:
     image: ghcr.io/dgianolla/trade-ai:latest
     command: celery -A app.core.celery_app worker -Q analise_fotos --loglevel=info --concurrency=2 --hostname=worker-analise@%h
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/analise_imagens
+      - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
@@ -66,10 +67,12 @@ services:
       - MINIO_SECURE=false
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
-      - postgres
       - redis
       - minio
     restart: unless-stopped
+    networks:
+      - analise_network
+      - network_public
 
   # Celery Flower (monitoramento de tasks)
   flower:
@@ -82,18 +85,6 @@ services:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - redis
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=analise_imagens
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     restart: unless-stopped
 
   redis:
@@ -116,7 +107,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
   minio_data:
 
 

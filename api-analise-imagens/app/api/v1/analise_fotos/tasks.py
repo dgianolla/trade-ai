@@ -44,7 +44,8 @@ def processar_auditoria_pdv_task(
     self,
     processamento_id: str,
     imagem_url: str,
-    modelo_llm: str = "gpt-4o"
+    modelo_llm: str = "gpt-4o",
+    nome_ativo: str = None
 ):
     """
     Task assíncrona para processar auditoria de PDV.
@@ -75,7 +76,7 @@ def processar_auditoria_pdv_task(
 
         # 3. Chamar serviço de análise de PDV
         analise_service = AnalisePDVService(modelo_llm=modelo_llm)
-        resultado_auditoria = analise_service.auditar_ativo_pdv(imagem_bytes)
+        resultado_auditoria = analise_service.auditar_ativo_pdv(imagem_bytes, nome_ativo=nome_ativo)
 
         # 4. Calcular tempo de processamento
         tempo_ms = int((time.time() - inicio) * 1000)
