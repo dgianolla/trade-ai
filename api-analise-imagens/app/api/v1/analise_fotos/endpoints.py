@@ -50,6 +50,8 @@ async def auditar_pdv(
         "tipo_analise": "auditoria_pdv",
         "modelo_llm": "gpt-4o",
     }
+    if request.nome_ativo:
+        meta["nome_ativo"] = request.nome_ativo
         
     processamento = Processamento(
         id=processamento_id,
@@ -68,7 +70,8 @@ async def auditar_pdv(
         args=[
             str(processamento_id),
             str(request.imagem_url),
-            "gpt-4o"
+            "gpt-4o",
+            request.nome_ativo
         ],
         queue='analise_fotos'
     )

@@ -8,11 +8,16 @@ class AuditarPDVRequest(BaseModel):
         alias="url",
         description="URL pública da imagem do ativo de PDV a ser auditado"
     )
+    nome_ativo: Optional[str] = Field(
+        None,
+        description="Nome ou tipo do ativo sendo avaliado, para auxiliar a IA na classificação"
+    )
     class Config:
         populate_by_name = True
         json_schema_extra = {
             "example": {
-                "url": "https://exemplo.com/fotos/ativo-pdv-001.jpg"
+                "url": "https://exemplo.com/fotos/ativo-pdv-001.jpg",
+                "nome_ativo": "ILHA"
             }
         }
 
