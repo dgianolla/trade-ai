@@ -44,7 +44,7 @@ def processar_auditoria_pdv_task(
     self,
     processamento_id: str,
     imagem_url: str,
-    modelo_llm: str = "gpt-4o",
+    modelo_llm: str = "gpt-4o-mini",
     nome_ativo: str = None
 ):
     """

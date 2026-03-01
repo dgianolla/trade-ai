@@ -14,7 +14,7 @@ def processar_planta_task(
     imagem_base64: str, 
     nome_arquivo: str, 
     loja_id: str, 
-    modelo_llm: str = "gpt-4o"
+    modelo_llm: str = "gpt-4o-mini"
 ):
     """Task assíncrona para processar dados de planta a partir de imagem."""
     inicio = time.time()

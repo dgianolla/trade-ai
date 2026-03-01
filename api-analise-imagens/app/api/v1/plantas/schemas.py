@@ -12,7 +12,7 @@ class ProcessarPlantaRequest(BaseModel):
         description="Nome original do arquivo submetido (ex: planta_floor1.png)"
     )
     modelo_llm: Optional[str] = Field(
-        "gpt-4o",
+        "gpt-4o-mini",
         description="Modelo de LLM a usar para a análise visual"
     )
 
@@ -22,7 +22,7 @@ class ProcessarPlantaRequest(BaseModel):
                 "loja_id": "loja-1001",
                 "imagem_base64": "iVBORw0KGgoAAAANSUhEUgAA...",
                 "nome_arquivo": "planta_t1.jpg",
-                "modelo_llm": "gpt-4o"
+                "modelo_llm": "gpt-4o-mini"
             }
         }
 

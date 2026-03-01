@@ -17,7 +17,7 @@ class PlantasService:
     Serviço para análise de planogramas, extração de endereços via OCR e inteligência LLM.
     """
 
-    def __init__(self, db: Session, modelo_llm: str = "gpt-4o"):
+    def __init__(self, db: Session, modelo_llm: str = "gpt-4o-mini"):
         self.db = db
         self.modelo_llm = modelo_llm
         self.ocr_service = BaseOCRService()

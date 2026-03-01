@@ -13,12 +13,12 @@ class AnalisePDVService:
     Serviço para análise de materiais promocionais de PDV usando LLMs com visão.
     """
 
-    def __init__(self, modelo_llm: str = "gpt-4o"):
+    def __init__(self, modelo_llm: str = "gpt-4o-mini"):
         """
         Inicializa o serviço com o modelo de LLM especificado.
 
         Args:
-            modelo_llm: 'gpt-4o' | 'claude-3-5-sonnet' | 'gemini-pro-vision'
+            modelo_llm: 'gpt-4o-mini' | 'claude-3-5-sonnet' | 'gemini-pro-vision'
         """
         self.modelo_llm = modelo_llm
 

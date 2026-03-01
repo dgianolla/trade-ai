@@ -48,7 +48,7 @@ async def auditar_pdv(
     # Safely building metadata
     meta = {
         "tipo_analise": "auditoria_pdv",
-        "modelo_llm": "gpt-4o",
+        "modelo_llm": "gpt-4o-mini",
     }
     if request.nome_ativo:
         meta["nome_ativo"] = request.nome_ativo
@@ -70,7 +70,7 @@ async def auditar_pdv(
         args=[
             str(processamento_id),
             str(request.imagem_url),
-            "gpt-4o",
+            "gpt-4o-mini",
             request.nome_ativo
         ],
         queue='analise_fotos'
