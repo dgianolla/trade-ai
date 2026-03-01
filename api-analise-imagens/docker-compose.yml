@@ -95,6 +95,9 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+    networks:
+      - network_public
+      - analise_network
 
   minio:
     image: minio/minio:latest
@@ -108,6 +111,9 @@ services:
       - "9000:9000"
       - "9001:9001"
     restart: unless-stopped
+    networks:
+      - network_public
+      - analise_network
 
 volumes:
   minio_data:
