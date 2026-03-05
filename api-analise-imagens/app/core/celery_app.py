@@ -1,3 +1,4 @@
+import socket
 from celery import Celery
 from app.config import settings
 
@@ -29,9 +30,9 @@ celery_app.conf.update(
     broker_transport_options={
         'socket_keepalive': True,
         'socket_keepalive_options': {
-            'TCP_KEEPIDLE': 60,   # inicia keepalive após 60s idle
-            'TCP_KEEPINTVL': 10,  # envia probe a cada 10s
-            'TCP_KEEPCNT': 5,     # desiste após 5 falhas consecutivas
+            socket.TCP_KEEPIDLE: 60,   # inicia keepalive após 60s idle
+            socket.TCP_KEEPINTVL: 10,  # envia probe a cada 10s
+            socket.TCP_KEEPCNT: 5,     # desiste após 5 falhas consecutivas
         },
         'socket_connect_timeout': 5,
         'socket_timeout': 5,
