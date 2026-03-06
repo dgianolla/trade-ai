@@ -17,11 +17,11 @@ Avalie APENAS o ATIVO PRINCIPAL da foto (ex.: cartaz de preço, adesivo, display
 Tudo o que vier de foto deve ser categorizado APENAS nas opções abaixo. Caso não seja possível identificar o ativo em nenhuma destas categorias, insira no JSON o valor exato: "nao_identificado".
 
 **Ativos Físicos**
-- PONTA GÔNDOLA
-- ILHA
+- PONTA GÔNDOLA → estrutura física de prateleiras no final do corredor de gôndola, com produtos expostos. É uma estrutura tridimensional com múltiplas prateleiras ocupadas por produtos.
+- ILHA → agrupamento de produtos no meio do corredor, geralmente sobre pallets ou estruturas baixas.
 - ILHA OURO
-- ORELHA DE PONTA GÔNDOLA
-- DISPLAY DE CHÃO 
+- ORELHA DE PONTA GÔNDOLA → painel/cartaz fixado nas laterais (orelhas) da estrutura de ponta de gôndola. É um material gráfico 2D preso à lateral da gôndola, não a gôndola em si.
+- DISPLAY DE CHÃO
 - RÁDIO INDOOR
 - TELA DESCANSO PDV (CHECKOUT)
 - SELF CHECKOUTS
@@ -29,12 +29,12 @@ Tudo o que vier de foto deve ser categorizado APENAS nas opções abaixo. Caso n
 - TV INDOOR
 
 **Ativos Gráficos**
-- ADESIVO DE CHECKOUT
-- ADESIVO DE CHÃO
-- PDV IMPRESSO (FAIXA GÔNDOLA)
+- ADESIVO DE CHECKOUT → material gráfico adesivo aplicado em balcão de checkout, esteira transportadora de produtos ou painel do caixa. Está fisicamente na área de pagamento/caixa.
+- ADESIVO DE CHÃO → adesivo aplicado no piso da loja.
+- PDV IMPRESSO (FAIXA GÔNDOLA) → tira impressa contínua fixada na frente das prateleiras de gôndola.
 - TIRA STRIP
-- WOBBLER
-- STOPPER
+- WOBBLER → material gráfico suspenso que balança, fixado na borda da prateleira.
+- STOPPER → material rígido que se projeta perpendicularmente à gôndola.
 - PLACA DE CARRINHO
 - PLACA DE CESTINHA
 - BANNER AÉREO LOJA
@@ -46,7 +46,7 @@ Tudo o que vier de foto deve ser categorizado APENAS nas opções abaixo. Caso n
 
 **Perecível**
 - ADESIVO DE PORTAS DE GELADEIRA
-- ESPAÇO GELADEIRA  
+- ESPAÇO GELADEIRA
 - PONTA GÔNDOLA REFRIGERADA(PORTA)
 - ILHA DE CONGELADOS
 - PONTA DE ILHA DE CONGELADOS
@@ -65,13 +65,30 @@ Tudo o que vier de foto deve ser categorizado APENAS nas opções abaixo. Caso n
 - ITEM TABLÓIDE
 - BOX TABLÓIDE
 
+**Dicas de disambiguação para ativos parecidos:**
+- Esteira de caixa com adesivo = ADESIVO DE CHECKOUT (não é ponta de gôndola)
+- Lateral da gôndola com cartaz pendurado = ORELHA DE PONTA GÔNDOLA (não é PONTA GÔNDOLA)
+- Estrutura com prateleiras cheias de produtos no fim do corredor = PONTA GÔNDOLA
+- Pallet baixo com produtos empilhados no meio do corredor = ILHA
+
 ---
 
-## 2. CRITÉRIOS DE AVALIAÇÃO (4 PILARES)
+## 2. REGRA DE EVIDÊNCIA VISUAL (OBRIGATÓRIA — LEIA ANTES DE AVALIAR)
+
+Reporte um problema SOMENTE se você tem CERTEZA VISUAL de que ele existe e está claramente visível na imagem.
+
+- **Na dúvida, NÃO reporte.** Se não consegue afirmar com certeza que um defeito existe, não inclua em `problemas` — inclua em `limitacoes_foto`.
+- **Sujeira vs. artefatos de imagem:** ruído de compressão JPEG, textura natural do material, sombras e variações de iluminação NÃO são sujeira. Só reporte sujeira se há manchas, resíduos ou acúmulo CLARAMENTE visíveis e inequívocos.
+- **Rasgos e amassados:** só reporte se claramente visíveis, não se a foto tem baixa resolução ou ângulo oblíquo que poderia criar essa ilusão.
+- **Regra de ouro:** se você precisaria de "talvez" ou "parece" para descrever o problema, não é um problema confirmado — não reporte.
+
+---
+
+## 3. CRITÉRIOS DE AVALIAÇÃO (4 PILARES)
 
 Cada critério possui subcritérios mensuráveis (checklist). Avalie cada subcritério como CONFORME ou NÃO CONFORME.
 
-### 2.1 POSICIONAMENTO (Peso 25%)
+### 3.1 POSICIONAMENTO (Peso 25%)
 - [ ] Está no local correto para o tipo de ativo? (gôndola, ilha, ponta, checkout)
 - [ ] Está na altura dos olhos ou na zona de alcance do shopper?
 - [ ] Está próximo ao produto que promove?
@@ -86,7 +103,7 @@ Pontuação:
 - 1/5 conformes = 2
 - 0/5 conformes = 0
 
-### 2.2 VISIBILIDADE (Peso 25%)
+### 3.2 VISIBILIDADE (Peso 25%)
 - [ ] É legível a aproximadamente 1,5m de distância?
 - [ ] O contraste entre texto e fundo é adequado?
 - [ ] Não há reflexo, sombra ou iluminação prejudicando a leitura?
@@ -101,8 +118,8 @@ Pontuação:
 - 1/5 conformes = 2
 - 0/5 conformes = 0
 
-### 2.3 INTEGRIDADE (Peso 25%)
-- [ ] Está limpo? (sem sujeira, poeira, manchas)
+### 3.3 INTEGRIDADE (Peso 25%)
+- [ ] Está limpo? (manchas, resíduos ou sujeira CLARAMENTE visíveis — aplicar seção 2)
 - [ ] Está sem rasgos ou cortes?
 - [ ] Está sem amassados ou dobras?
 - [ ] Está sem descolamento? (total ou parcial)
@@ -118,7 +135,7 @@ Pontuação:
 - 1/6 conformes = 1
 - 0/6 conformes = 0
 
-### 2.4 CONTEÚDO (Peso 25%)
+### 3.4 CONTEÚDO (Peso 25%)
 - [ ] A marca está correta e identificável?
 - [ ] O preço (se aplicável) está presente e legível?
 - [ ] O preço está no formato correto? (R$ X,XX)
@@ -139,7 +156,7 @@ Pontuação:
 
 ---
 
-## 3. CÁLCULO DA NOTA FINAL
+## 4. CÁLCULO DA NOTA FINAL
 
 nota_final = round((posicionamento + visibilidade + integridade + conteudo) / 4)
 
@@ -147,7 +164,7 @@ A nota final é um inteiro de 0 a 10.
 
 ---
 
-## 4. PENALIDADES POR GRAVIDADE
+## 5. PENALIDADES POR GRAVIDADE
 
 Aplique descontos adicionais à nota final conforme a gravidade dos problemas encontrados:
 
@@ -162,7 +179,7 @@ A nota final nunca pode ser menor que 0.
 
 ---
 
-## 5. CRITÉRIOS ELIMINATÓRIOS (TRAVAS AUTOMÁTICAS)
+## 6. CRITÉRIOS ELIMINATÓRIOS (TRAVAS AUTOMÁTICAS)
 
 Independente da média calculada, as seguintes situações TRAVAM a nota máxima:
 
@@ -178,24 +195,25 @@ Se mais de um critério eliminatório se aplica, use a MENOR nota máxima.
 
 ---
 
-## 6. REGRAS ESPECÍFICAS POR TIPO DE ATIVO
+## 7. REGRAS ESPECÍFICAS POR TIPO DE ATIVO
 
 Aplique as exigências extras conforme o tipo de ativo identificado:
 
-| Tipo de Ativo aplicável                  | Exigências adicionais                                                  |
-|------------------------------------------|------------------------------------------------------------------------|
-| Ativos que contém cartaz de preço        | Preço obrigatório, formato correto (R$ X,XX), validade aparente        |
-| WOBBLER / STOPPER                        | Fixação firme, não dobrado, perpendicular à gôndola                    |
-| PDV IMPRESSO (FAIXA GÔNDOLA)             | Alinhamento contínuo, sem gaps, sem sobreposição                       |
-| ADESIVO DE CHÃO                          | Sem bolhas, sem descolamento nas bordas, sem sujeira acumulada         |
-| DISPLAY DE CHÃO / TOTEM LED              | Estrutura estável, montagem completa, sem peças faltando               |
-| BANNERS / PLACAS                         | Tensão adequada, sem ondulações, fixação em todos os pontos            |
+| Tipo de Ativo aplicável                                      | Exigências adicionais                                                                                                                                    |
+|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ativos que contém cartaz de preço                            | Preço obrigatório, formato correto (R$ X,XX), validade aparente                                                                                          |
+| WOBBLER / STOPPER                                            | Fixação firme, não dobrado, perpendicular à gôndola                                                                                                      |
+| PDV IMPRESSO (FAIXA GÔNDOLA)                                 | Alinhamento contínuo, sem gaps, sem sobreposição                                                                                                         |
+| ADESIVO DE CHÃO                                              | Sem bolhas, sem descolamento nas bordas, sem sujeira acumulada                                                                                           |
+| DISPLAY DE CHÃO / TOTEM LED                                  | Estrutura estável, montagem completa, sem peças faltando                                                                                                 |
+| BANNERS / PLACAS                                             | Tensão adequada, sem ondulações, fixação em todos os pontos                                                                                              |
+| PONTA GÔNDOLA / PONTA GÔNDOLA REFRIGERADA(PORTA) / PONTA DE ILHA DE CONGELADOS | Ocupação mínima de 70% das prateleiras com produtos; bloqueio de marca/categoria visível (produtos da mesma marca/categoria agrupados); presença de material de comunicação (cartaz, header ou faixa); facings organizados e sem lacunas grandes. Penalidades adicionais: estrutura com menos de 50% de ocupação = Alta (-2 a -3); ausência total de material de comunicação = Média (-1 a -2); mistura caótica de categorias sem relação = Média (-1). |
 
 Se o ativo não se encaixar em nenhum tipo acima, avalie pelos 4 pilares padrão.
 
 ---
 
-## 7. REGRAS PARA QUALIDADE DA FOTO
+## 8. REGRAS PARA QUALIDADE DA FOTO
 
 | Condição da foto                  | Ação                                                                 |
 |-----------------------------------|----------------------------------------------------------------------|
@@ -206,7 +224,7 @@ Se o ativo não se encaixar em nenhum tipo acima, avalie pelos 4 pilares padrão
 
 ---
 
-## 8. PREÇO (REGRAS RÍGIDAS)
+## 9. PREÇO (REGRAS RÍGIDAS)
 
 - Extraia o preço SOMENTE se ele estiver explícito e legível NO ATIVO PRINCIPAL.
 - Se não houver preço no ativo principal, ou estiver ilegível, retorne preço: null.
@@ -215,7 +233,7 @@ Se o ativo não se encaixar em nenhum tipo acima, avalie pelos 4 pilares padrão
 
 ---
 
-## 9. ESCALA DE STATUS
+## 10. ESCALA DE STATUS
 
 | Nota Final | Status                    |
 |------------|---------------------------|
@@ -225,7 +243,7 @@ Se o ativo não se encaixar em nenhum tipo acima, avalie pelos 4 pilares padrão
 
 ---
 
-## 10. OUTPUT (OBRIGATÓRIO)
+## 11. OUTPUT (OBRIGATÓRIO)
 
 Retorne APENAS um JSON válido exatamente com estas chaves (não omita nenhuma):
 
@@ -251,15 +269,15 @@ Retorne APENAS um JSON válido exatamente com estas chaves (não omita nenhuma):
 
 ---
 
-## 11. REGRAS DE PREENCHIMENTO
+## 12. REGRAS DE PREENCHIMENTO
 
 - nota: inteiro de 0 a 10 (após cálculo, penalidades e travas).
 - nota_posicionamento, nota_visibilidade, nota_integridade, nota_conteudo: inteiros de 0 a 10 cada.
-- status: conforme tabela da seção 9. Se houver critério eliminatório, o status segue a trava da seção 5.
+- status: conforme tabela da seção 10. Se houver critério eliminatório, o status segue a trava da seção 6.
 - tipo_ativo: classifique OBRIGATORIAMENTE em uma das categorias da lista de ativos permitidos (Seção 1.1). Caso não seja possível identificar, use "nao_identificado".
 - marca: use a marca que aparece no ativo principal; se não der para identificar, null.
 - visualizacao_ok: true se estiver visível e legível; caso contrário false.
-- problemas: liste apenas problemas observáveis no ativo principal; se não houver, use [].
+- problemas: liste apenas problemas observáveis com certeza visual no ativo principal (seção 2); se não houver, use [].
 - penalidades_aplicadas: liste as penalidades aplicadas com gravidade (ex.: "Média: amassado visível (-1)"); se nenhuma, use [].
 - criterio_eliminatorio: descreva o critério eliminatório ativado; se nenhum, null.
 - recomendacao: ação corretiva sugerida.
@@ -272,7 +290,7 @@ Retorne APENAS um JSON válido exatamente com estas chaves (não omita nenhuma):
 
 ---
 
-## 12. EXEMPLOS DE OUTPUT
+## 13. EXEMPLOS DE OUTPUT
 
 ### Exemplo 1: Ativo aprovado com preço
 {
@@ -335,6 +353,56 @@ Retorne APENAS um JSON válido exatamente com estas chaves (não omita nenhuma):
   "preço": "2x R$ 12,00",
   "confianca_avaliacao": "media",
   "limitacoes_foto": ["Foto parcialmente escura, cores não totalmente verificáveis"]
+}
+
+### Exemplo 4: PONTA GÔNDOLA aprovada com execução correta
+{
+  "nota": 9,
+  "nota_posicionamento": 10,
+  "nota_visibilidade": 9,
+  "nota_integridade": 9,
+  "nota_conteudo": 8,
+  "status": "aprovado",
+  "tipo_ativo": "PONTA GÔNDOLA",
+  "marca": "Unilever",
+  "visualizacao_ok": true,
+  "parecer": "Ponta de gôndola com excelente execução. Estrutura totalmente ocupada (>90%), produtos em bloco de marca bem definido, header com comunicação visível e legível. Facings organizados em todas as prateleiras.",
+  "problemas": [],
+  "penalidades_aplicadas": [],
+  "criterio_eliminatorio": null,
+  "recomendacao": "Manter a execução. Verificar reposição de estoque nas prateleiras inferiores nas próximas visitas.",
+  "preço": "R$ 12,99",
+  "confianca_avaliacao": "alta",
+  "limitacoes_foto": []
+}
+
+### Exemplo 5: PONTA GÔNDOLA reprovada por sub-ocupação e ausência de comunicação
+{
+  "nota": 3,
+  "nota_posicionamento": 6,
+  "nota_visibilidade": 4,
+  "nota_integridade": 7,
+  "nota_conteudo": 3,
+  "status": "reprovado",
+  "tipo_ativo": "PONTA GÔNDOLA",
+  "marca": "P&G",
+  "visualizacao_ok": false,
+  "parecer": "Ponta de gôndola com menos de 40% de ocupação: prateleiras superiores vazias e produtos concentrados apenas nas prateleiras inferiores. Ausência de material de comunicação (sem header, sem cartaz de preço). Mistura de categorias sem relação aparente.",
+  "problemas": [
+    "Menos de 40% de ocupação da estrutura — prateleiras superiores vazias",
+    "Ausência de material de comunicação (sem header ou cartaz)",
+    "Mistura de categorias sem relação (produtos de limpeza e alimentos juntos)"
+  ],
+  "penalidades_aplicadas": [
+    "Alta: estrutura com menos de 50% de ocupação (-2)",
+    "Média: ausência total de material de comunicação (-2)",
+    "Média: mistura caótica de categorias (-1)"
+  ],
+  "criterio_eliminatorio": null,
+  "recomendacao": "Reabastecer a estrutura até atingir mínimo de 70% de ocupação. Instalar header e cartaz de preço. Reorganizar por bloco de marca/categoria.",
+  "preço": null,
+  "confianca_avaliacao": "alta",
+  "limitacoes_foto": []
 }
 
 ---

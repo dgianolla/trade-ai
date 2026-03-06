@@ -55,7 +55,7 @@ class AnalisePDVService:
 
         prompt = self.PROMPT_AUDITORIA
         if nome_ativo:
-            prompt += f"\n\nINFORMAÇÃO DE CONTEXTO DO USUÁRIO: O usuário informou que o ativo presente nesta foto é: '{nome_ativo}'. Utilize esta informação para auxiliar na avaliação da imagem e na classificação correta do tipo_ativo."
+            prompt += f"\n\nCLASSIFICAÇÃO PRIMÁRIA OBRIGATÓRIA: O usuário confirmou que o ativo nesta foto é '{nome_ativo}'. Use EXATAMENTE este valor como tipo_ativo no JSON, a menos que a imagem mostre CLARAMENTE um ativo de natureza completamente diferente (ex.: a foto foi enviada errada). A classificação informada pelo usuário tem prioridade sobre sua interpretação visual em casos de ambiguidade."
 
         # Chamar LLM apropriado
         if self.modelo_llm.startswith("gpt"):
