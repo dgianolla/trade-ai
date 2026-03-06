@@ -27,6 +27,7 @@ celery_app.conf.update(
     broker_connection_retry_on_startup=True,
 
     # Keepalive para evitar conexão TCP stale com o Redis
+    # Nota: socket_timeout NÃO deve ser definido — interfere com BRPOP do kombu
     broker_transport_options={
         'socket_keepalive': True,
         'socket_keepalive_options': {
@@ -34,8 +35,7 @@ celery_app.conf.update(
             socket.TCP_KEEPINTVL: 10,  # envia probe a cada 10s
             socket.TCP_KEEPCNT: 5,     # desiste após 5 falhas consecutivas
         },
-        'socket_connect_timeout': 5,
-        'socket_timeout': 5,
+        'socket_connect_timeout': 10,
     },
 
     # Reconexão automática ilimitada em caso de perda de conexão
