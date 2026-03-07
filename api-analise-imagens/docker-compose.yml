@@ -82,6 +82,7 @@ services:
     image: ghcr.io/dgianolla/trade-ai:latest
     command: celery -A app.core.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler --schedule /tmp/celerybeat-schedule
     environment:
+      - API_KEY=${API_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
     depends_on:
