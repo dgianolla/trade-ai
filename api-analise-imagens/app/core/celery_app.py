@@ -45,5 +45,14 @@ celery_app.conf.update(
 # Auto-discover tasks
 celery_app.autodiscover_tasks([
     'app.api.v1.plantas',
-    'app.api.v1.analise_fotos'
+    'app.api.v1.analise_fotos',
+    'app.api.v1.shared',
 ])
+
+# Agendamento do sweeper de zumbis (requer celery beat rodando)
+celery_app.conf.beat_schedule = {
+    'cleanup-zumbis-a-cada-hora': {
+        'task': 'shared.cleanup_zumbis',
+        'schedule': 3600.0,  # a cada 1 hora
+    },
+}

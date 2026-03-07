@@ -76,6 +76,20 @@ services:
       - analise_network
       - network_public
 
+  # Celery Beat — dispara tasks agendadas (ex: sweeper de zumbis)
+  worker-beat:
+    build: .
+    image: ghcr.io/dgianolla/trade-ai:latest
+    command: celery -A app.core.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler --schedule /tmp/celerybeat-schedule
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - analise_network
+
   # Celery Flower (monitoramento de tasks)
   flower:
     build: .

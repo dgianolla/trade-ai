@@ -1,7 +1,9 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.auth import verificar_api_key
+from app.core.logging import logger
 from app.api.v1.analise_fotos.schemas import (
     AuditarPDVRequest,
     AuditarPDVResponse,
@@ -9,7 +11,6 @@ from app.api.v1.analise_fotos.schemas import (
 )
 from app.api.v1.analise_fotos.tasks import processar_auditoria_pdv_task
 from app.models.processamento import Processamento, TipoProcessamento, StatusProcessamento
-import uuid
 
 router = APIRouter()
 
@@ -65,16 +66,26 @@ async def auditar_pdv(
     db.add(processamento)
     db.commit()
 
-    # Enfileirar task
-    processar_auditoria_pdv_task.apply_async(
-        args=[
-            str(processamento_id),
-            str(request.imagem_url),
-            "gpt-4o-mini",
-            request.nome_ativo
-        ],
-        queue='analise_fotos'
-    )
+    # Enfileirar task — se o broker estiver com conexão stale, captura aqui
+    try:
+        processar_auditoria_pdv_task.apply_async(
+            args=[
+                str(processamento_id),
+                str(request.imagem_url),
+                "gpt-4o-mini",
+                request.nome_ativo
+            ],
+            queue='analise_fotos'
+        )
+    except Exception as e:
+        logger.error(f"Falha ao enfileirar task para processamento {processamento_id}: {e}")
+        processamento.status = StatusProcessamento.ERRO
+        processamento.erro_mensagem = f"Falha ao enfileirar task: {str(e)}"
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Serviço de processamento temporariamente indisponível. Tente novamente em instantes."
+        )
 
     return AuditarPDVResponse(
         sucesso=True,
