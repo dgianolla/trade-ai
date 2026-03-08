@@ -40,6 +40,16 @@ celery_app.conf.update(
 
     # Reconexão automática ilimitada em caso de perda de conexão
     broker_connection_max_retries=None,
+
+    # Retry de publish no producer (API) — evita silent drop de conexão stale
+    # Sem isso, apply_async retorna sem erro mas a mensagem é descartada após idle
+    task_publish_retry=True,
+    task_publish_retry_policy={
+        'max_retries': 3,
+        'interval_start': 0.2,
+        'interval_step': 0.2,
+        'interval_max': 1.0,
+    },
 )
 
 # Auto-discover tasks
