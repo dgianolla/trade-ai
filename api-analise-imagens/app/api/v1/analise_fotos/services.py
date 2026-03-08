@@ -100,7 +100,7 @@ class AnalisePDVService:
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{imagem_base64}",
-                                "detail": "high"
+                                "detail": "auto"
                             }
                         }
                     ]

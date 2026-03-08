@@ -1,5 +1,6 @@
 import time
 import requests
+from openai import RateLimitError
 from app.core.celery_app import celery_app
 from app.core.database import get_db_session
 from app.models.processamento import Processamento, StatusProcessamento
@@ -46,7 +47,7 @@ def processar_analise_task(self, processamento_id: str, imagem_base64: str, nome
         raise self.retry(exc=e, countdown=2 ** self.request.retries)
 
 
-@celery_app.task(name='analise_fotos.processar_auditoria_pdv', bind=True, max_retries=3)
+@celery_app.task(name='analise_fotos.processar_auditoria_pdv', bind=True, max_retries=5)
 def processar_auditoria_pdv_task(
     self,
     processamento_id: str,
@@ -104,10 +105,18 @@ def processar_auditoria_pdv_task(
             "nota": resultado_auditoria["nota"]
         }
 
+    except RateLimitError as e:
+        # 429 é transitório: backoff longo, NÃO marcar como erro durante retries
+        countdown = 60 * (2 ** self.request.retries)  # 60s, 120s, 240s, 480s, 960s
+        raise self.retry(exc=e, countdown=countdown)
+
     except requests.exceptions.RequestException as e:
         _marcar_erro(processamento_id, f"Erro ao baixar imagem: {str(e)}")
         raise
 
     except Exception as e:
-        _marcar_erro(processamento_id, str(e))
+        # Só marca ERRO se esgotou todos os retries
+        if self.request.retries >= self.max_retries:
+            _marcar_erro(processamento_id, str(e))
+            raise
         raise self.retry(exc=e, countdown=2 ** self.request.retries)
